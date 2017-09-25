@@ -10,6 +10,10 @@ public enum BeerKind {
 	Dark, Light, Ale;
 
 	public static List<String> getAllKinds() {
-		return Arrays.asList(Dark.name(), Light.name(), Ale.name());
+		return Arrays.asList(
+				Ale.name(),
+				Dark.name(),
+				Light.name()
+		);
 	}
 }

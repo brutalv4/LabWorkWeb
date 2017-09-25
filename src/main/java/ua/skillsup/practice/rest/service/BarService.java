@@ -14,64 +14,70 @@ import java.util.List;
 @Service
 public class BarService {
 
-	private String country;
-	private String city;
-	private String phoneNumber;
-	private String address;
-	private int darkBeerGlasses;
-	private int lightBeerGlasses;
-	private int aleGlasses;
+    @Value("${contact.country}")
+    private String country;
+    @Value("${contact.city}")
+    private String city;
+    @Value("${contact.phone.number}")
+    private String phoneNumber;
+    @Value("${contact.adress}")
+    private String address;
+    private int darkBeerGlasses;
+    private int lightBeerGlasses;
+    @Value("${bar.init.glasses}")
+    private int aleGlasses;
 
-	public List<String> getBeerKinds() {
-		return BeerKind.getAllKinds();
-	}
+    public List<String> getBeerKinds() {
+        return BeerKind.getAllKinds();
+    }
 
-	public ContactInformation getContactInformation() {
-		ContactInformation ci = new ContactInformation();
-		ci.setCountry(country);
-		ci.setCity(city);
-		ci.setAddress(address);
-		ci.setPhoneNumber(phoneNumber);
-		return ci;
-	}
+    public ContactInformation getContactInformation() {
+        ContactInformation ci = new ContactInformation();
+        ci.setCountry(country);
+        ci.setCity(city);
+        ci.setAddress(address);
+        ci.setPhoneNumber(phoneNumber);
+        return ci;
+    }
 
-	public BarStatus getBarStatus() {
-		BarStatus status = new BarStatus();
-		status.setGlassesOfLight(lightBeerGlasses);
-		status.setGlassesOfDark(darkBeerGlasses);
-		status.setGlassesOfAle(aleGlasses);
-		return status;
-	}
+    public BarStatus getBarStatus() {
+        BarStatus status = new BarStatus();
+        status.setGlassesOfLight(lightBeerGlasses);
+        status.setGlassesOfDark(darkBeerGlasses);
+        status.setGlassesOfAle(aleGlasses);
+        return status;
+    }
 
-	public BarStatus executeClientOrder(ClientOrder order) {
-		switch (order.getKind()) {
-			case Dark:
-				checkBeerCount(darkBeerGlasses, order.getCount(), "Not enough Dark Beer!");
-				darkBeerGlasses -= order.getCount();
-				break;
-			case Light:
-				checkBeerCount(lightBeerGlasses, order.getCount(), "Not enough Light Beer!");
-				lightBeerGlasses -= order.getCount();
-				break;
-			case Ale:
-				checkBeerCount(aleGlasses, order.getCount(), "Not enough Ale!");
-				aleGlasses -= order.getCount();
-				break;
-			default: throw new NotEnoughBeerException("I haven't such beer!");
-		}
-		return getBarStatus();
-	}
+    public BarStatus executeClientOrder(ClientOrder order) {
+        switch (order.getKind()) {
+            case Dark:
+                checkBeerCount(darkBeerGlasses, order.getCount(), "Not enough Dark Beer!");
+                darkBeerGlasses -= order.getCount();
+                break;
+            case Light:
+                checkBeerCount(lightBeerGlasses, order.getCount(), "Not enough Light Beer!");
+                lightBeerGlasses -= order.getCount();
+                break;
+            case Ale:
+                checkBeerCount(aleGlasses, order.getCount(), "Not enough Ale!");
+                aleGlasses -= order.getCount();
+                break;
+            default:
+                throw new NotEnoughBeerException("I haven't such beer!");
+        }
+        return getBarStatus();
+    }
 
-	private void checkBeerCount(int have, int required, String message) {
-		if (have < required) {
-			throw new NotEnoughBeerException(message);
-		}
-	}
+    private void checkBeerCount(int have, int required, String message) {
+        if (have < required) {
+            throw new NotEnoughBeerException(message);
+        }
+    }
 
-	public BarStatus executeRefillOrder(RefillOrder refillOrder) {
-		darkBeerGlasses += refillOrder.getDark();
-		lightBeerGlasses += refillOrder.getLight();
-		aleGlasses += refillOrder.getAle();
-		return getBarStatus();
-	}
+    public BarStatus executeRefillOrder(RefillOrder refillOrder) {
+        darkBeerGlasses += refillOrder.getDark();
+        lightBeerGlasses += refillOrder.getLight();
+        aleGlasses += refillOrder.getAle();
+        return getBarStatus();
+    }
 }
